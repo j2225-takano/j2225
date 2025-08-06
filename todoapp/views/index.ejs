@@ -5,31 +5,81 @@
   <link rel='stylesheet' href='/stylesheets/style.css'/>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+    .todo-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+    .todo-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .todo-list li:last-child {
+      border-bottom: none;
+    }
+    .todo-content.done {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+    .welcome {
+      margin-top: 6rem;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 <%- include('./error_messages'); %>
 <% if(isAuth) { %>
  <div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <form action="/" method="post">
-        <label>タスクの追加</label>
-        <input required type="text" name="add" placeholder="何をする?"/>
-        <input type="submit" value="追加"/>
-      </form>
-    </div>
-    <div class="col-md-6">
-      <ul>
-        <% for(let todo of todos){ %>
-          <li><span><%= todo.content %></span></li>
-        <% } %>
-      </ul>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="todo-card">
+        <h2 class="mb-4">ToDoリスト</h2>
+        <form action="/" method="post" class="form-inline mb-4">
+          <input required type="text" name="add" class="form-control mr-2" placeholder="何をする?"/>
+          <button type="submit" class="btn btn-success">追加</button>
+        </form>
+        <ul class="todo-list list-unstyled">
+          <% if (todos && todos.length > 0) { %>
+            <% for(let todo of todos){ %>
+              <li>
+                <span class="todo-content <%= todo.is_done ? 'done' : '' %>"><%= todo.content %></span>
+                <!-- 完了/未完了ボタン例（is_doneカラムがある場合） -->
+                <% if (typeof todo.is_done !== 'undefined') { %>
+                  <form action="/toggle/<%= todo.id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm <%= todo.is_done ? 'btn-warning' : 'btn-primary' %>">
+                      <%= todo.is_done ? "未完了に戻す" : "完了にする" %>
+                    </button>
+                  </form>
+                <% } %>
+              </li>
+            <% } %>
+          <% } else { %>
+            <li>タスクがありません。</li>
+          <% } %>
+        </ul>
+        <form action="/logout" method="POST" class="mt-4">
+          <button type="submit" class="btn btn-outline-secondary btn-sm">ログアウト</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 <% } else { %>
-  <h1>Welcome to the TodoApp</h1>
-  <a class="btn btn-primary" href="/signup" role="button">Sign up now!</a>
+  <div class="welcome">
+    <h1 class="mb-4">Welcome to the TodoApp</h1>
+    <a class="btn btn-primary btn-lg" href="/signup" role="button">Sign up now!</a>
+    <a class="btn btn-outline-secondary btn-lg ml-2" href="/signin" role="button">ログイン</a>
+  </div>
 <% } %>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
