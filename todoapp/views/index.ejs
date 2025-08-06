@@ -54,6 +54,7 @@
               <li>
                 <span class="todo-content <%= todo.is_done ? 'done' : '' %>"><%= todo.content %></span>
                 <!-- 完了/未完了ボタン例（is_doneカラムがある場合） -->
+                 <!-- 完了/未完了ボタン例（is_doneカラムがある場合） -->
                 <% if (typeof todo.is_done !== 'undefined') { %>
                   <form action="/toggle/<%= todo.id %>" method="POST" style="display:inline;">
                     <button type="submit" class="btn btn-sm <%= todo.is_done ? 'btn-warning' : 'btn-primary' %>">
